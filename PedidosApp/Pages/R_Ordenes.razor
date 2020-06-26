@@ -1,0 +1,277 @@
+﻿@page "/Ordenes"
+
+
+@using PedidosApp.Models
+@using PedidosApp.BLL
+@using PedidosApp.DAL
+@inject IToastService toast
+
+<EditForm Model="Ordenes" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro de Ordenes</h3>
+        </div>
+        <div class="card-body">
+            <form>
+                @*OrdenId*@
+                <div class="form-row align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <label>OrdenId</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="Ordenes.OrdenId" class="form-control col-4" />
+                                <ValidationMessage For="@(() => Ordenes.OrdenId)" />
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Fecha*@
+                <div class="form-group">
+                    <label>Fecha Orden</label>
+                    <InputDate @bind-Value="Ordenes.Fecha" class="form-control" />
+                    <ValidationMessage For="@(() => Ordenes.Fecha)" />
+                </div>
+                @*SuplidorId*@
+                <div class="form-group">
+                    <label>Suplidor</label>
+                    <div class="form-group">
+                        <select class="form-control" @bind="@Ordenes.SuplidorId" @onclick="CargarSuplidor">
+                            <option value="" disabled selected>Seleccione una Persona</option>
+                            @foreach (var item in CargarBoxSupli())
+                            {
+                                <option value="@item.SuplidorId">@item.Nombre </option>
+                            }
+                        </select>
+                    </div>
+                    <ValidationMessage For="@(()=>suplidores.SuplidorId)" />
+                </div>
+                @*Detalle*@
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label>Producto</label>
+                        <select class="form-control" @bind="ordenseleccionada" @onclick="CargarProducto">
+                            <option value="" disabled selected>Seleccione un producto</option>
+                            @foreach (var item in CargarBox())
+                            {
+                                <option value="@item.ProductoId">@item.Descripcion</option>
+
+                            }
+                        </select>
+                    </div>
+                    @*Cantidad*@
+                    <div class="form-group col">
+                        <label>Cantidad</label>
+                        <div class="input-group">
+                            <InputNumber @bind-Value="ordenDetalle.Cantidad" class="form-control" />
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" @onclick="AgregarDetalle">
+                                    <i class="oi oi-plus" aria-hidden="true" /> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*TablaDetalle*@
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">DetalleId</th>
+                            <th scope="col">OrdenId</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Costo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Ordenes.ordenDetalles)
+                        {
+                            <tr>
+                                <td>@item.DetalleId</td>
+                                <td>@item.OrdenId</td>
+                                <td>@item.Cantidad</td>
+                                <td>@item.Costo</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+                @*Total*@
+                <div class="form-group">
+                    <label>Valor</label>
+                    <InputNumber @bind-Value="Ordenes.Monto" @oninput="TotalMonto" @onfocus="TotalMonto" @onfocusout="TotalMonto" ReadOnly="True" class="form-control" />
+                    <ValidationMessage For="@(() => Ordenes.Monto)" />
+                </div>
+
+            </form>
+        </div>
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo</button>
+                <button type="submit" class="btn btn-lg btn-success">Guardar</button>
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    Ordenes Ordenes = new Ordenes();
+    Productos productos = new Productos();
+    OrdenDetalle ordenDetalle = new OrdenDetalle();
+    Suplidores suplidores = new Suplidores();
+    Contexto contexto = new Contexto();
+
+
+    private string ordenseleccionada = "0";
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+        Buscar();
+        CargarBox();
+    }
+    private void Buscar()
+    {
+        if (Ordenes.OrdenId > 0)
+        {
+            var encontrado = OrdenesBLL.Buscar(Ordenes.OrdenId);
+
+            if (encontrado != null)
+                this.Ordenes = encontrado;
+            else
+                toast.ShowError("No encontrado");
+        }
+    }
+
+    public void Nuevo()
+    {
+        Ordenes = new Ordenes();
+    }
+
+    private void AgregarDetalle()
+    {
+        Ordenes.ordenDetalles.Add(new OrdenDetalle
+        {
+            ProductoId = Convert.ToInt32(ordenseleccionada),
+            Cantidad=ordenDetalle.Cantidad,
+            Costo= contexto.productos.Find(Convert.ToInt32(ordenseleccionada)).Costo
+
+
+        });
+
+    }
+    public void Guardar()
+    {
+        bool guardo;
+
+        guardo = OrdenesBLL.Guardar(Ordenes);
+
+        if (guardo)
+        {
+            Nuevo();
+            toast.ShowSuccess("Guardado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible guardar");
+    }
+
+    public void Eliminar()
+    {
+        bool elimino;
+
+        elimino = OrdenesBLL.Eliminar(Ordenes.OrdenId);
+
+        if (elimino)
+        {
+            Nuevo();
+            toast.ShowSuccess("Eliminado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible eliminar");
+    }
+
+    private List<Productos> CargarBox()
+    {
+        List<Productos> lista = new List<Productos>();
+        try
+        {
+            lista = ProductoBLL.GetList(P => true);
+
+        }
+        catch (Exception ex)
+        {
+            toast.ShowError(ex.ToString(), "Error");
+        }
+        return lista;
+    }
+
+
+    private void CargarProducto()
+    {
+        if (ordenDetalle.ProductoId > 0)
+        {
+            try
+            {
+                productos = ProductoBLL.Buscar(Convert.ToInt32(productos.ProductoId));
+            }
+            catch (Exception ex)
+            {
+                toast.ShowError(ex.ToString(), "Error");
+            }
+        }
+    }
+
+    private List<Suplidores> CargarBoxSupli()
+    {
+        List<Suplidores> lista = new List<Suplidores>();
+        try
+        {
+            lista = SuplidoresBLL.GetList(P => true);
+
+        }
+        catch (Exception ex)
+        {
+            toast.ShowError(ex.ToString(), "Error");
+        }
+        return lista;
+    }
+
+
+    private void CargarSuplidor()
+    {
+        if (ordenDetalle.ProductoId > 0)
+        {
+            try
+            {
+                suplidores = SuplidoresBLL.Buscar(Convert.ToInt32(productos.ProductoId));
+            }
+            catch (Exception ex)
+            {
+                toast.ShowError(ex.ToString(), "Error");
+            }
+        }
+    }
+
+    public void TotalMonto()
+    {
+        Ordenes.Monto = Convert.ToInt32(0);
+        
+        foreach (var item in Ordenes.ordenDetalles)
+        {
+            
+            Ordenes.Monto += item.Costo* Convert.ToInt32(item.Cantidad);
+        }
+
+       
+
+    }
+    public void Costo()
+    {
+
+    }
+}
