@@ -164,7 +164,7 @@
             Descripcion= contexto.productos.Find(Convert.ToInt32(ordenseleccionada)).Descripcion,
             Cantidad =ordenDetalle.Cantidad,
             Costo= contexto.productos.Find(Convert.ToInt32(ordenseleccionada)).Costo,
-            Importe= Convert.ToDecimal(ordenDetalle.Cantidad)*ordenDetalle.Costo
+            Importe= Convert.ToDecimal(ordenDetalle.Cantidad)* contexto.productos.Find(Convert.ToInt32(ordenseleccionada)).Costo
 
 
         });
