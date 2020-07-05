@@ -16,7 +16,7 @@ namespace PedidosApp.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(@"Data Source=C:\Users\stive\OneDrive\Escritorio\BD\Ordenes1.db");
+            optionsBuilder.UseSqlite(@"Data Source= Data\TeacherControl.db");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

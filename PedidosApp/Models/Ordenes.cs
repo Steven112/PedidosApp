@@ -55,6 +55,7 @@ namespace PedidosApp.Models
         [ForeignKey("ProductoId")]
         public Productos productos { get; set; }
 
+        public string Descripcion { get; set; }
 
         [Required(ErrorMessage = "El campo no puede estar vacío")]
         [Range(0, 999999, ErrorMessage = "El campo no puede ser menor que cero o mayor a 999999")]
@@ -63,24 +64,29 @@ namespace PedidosApp.Models
         [Required(ErrorMessage = "El campo no puede estar vacío")]
         public Decimal Costo { get; set; }
 
+        public Decimal Importe { get; set; }
+
         public OrdenDetalle()
         {
             DetalleId = 0;
             OrdenId = 0;
             ProductoId = 0;
+            Descripcion = string.Empty;
             this.productos = productos;
             Cantidad = 0;
             Costo = 0;
+            Importe = 0;
         }
 
-        public OrdenDetalle(int detalleId, int ordenId, int productoId, int cantidad, decimal costo)
+        public OrdenDetalle(int detalleId, int ordenId, int productoId, string descripcion, int cantidad, decimal costo, decimal importe)
         {
             DetalleId = detalleId;
             OrdenId = ordenId;
             ProductoId = productoId;
+            Descripcion = descripcion;
             Cantidad = cantidad;
             Costo = costo;
+            Importe = importe;
         }
-
     }
 }

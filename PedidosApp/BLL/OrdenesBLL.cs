@@ -21,27 +21,26 @@ namespace PedidosApp.BLL
 
         private static bool Insertar(Ordenes orden)
         {
-            Productos productos = new Productos();
             bool paso = false;
             Contexto contexto = new Contexto();
-            OrdenDetalle ordenDetalle = new OrdenDetalle();
             
             try
             {
 
                 foreach (var item in orden.ordenDetalles)
                 {
-                   /* var producto = contexto.productos.Find(item.ProductoId);
+                    var producto = contexto.productos.Find(item.ProductoId);
                     if (producto != null)
                     {
                         
                         contexto.productos.Find(item.ProductoId).Inventario -= item.Cantidad;
-                    }*/
+                    }
                     contexto.ordenes.Add(orden);
                     paso = contexto.SaveChanges() > 0;
                 }
 
             }
+
             catch (Exception)
             {
                 throw;

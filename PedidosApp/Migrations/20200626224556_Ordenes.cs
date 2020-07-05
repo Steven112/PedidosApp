@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PedidosApp.Migrations
 {
-    public partial class Order : Migration
+    public partial class Ordenes : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

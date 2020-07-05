@@ -9,8 +9,8 @@ using PedidosApp.DAL;
 namespace PedidosApp.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20200626220900_Order")]
-    partial class Order
+    [Migration("20200626224556_Ordenes")]
+    partial class Ordenes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
