@@ -11,7 +11,7 @@ namespace PedidosApp.BLL.Tests
     [TestClass()]
     public class OrdenesBLLTests
     {
-        [TestMethod()]
+      /*  [TestMethod()]
         public void GuardarTest()
         {
            
@@ -26,13 +26,13 @@ namespace PedidosApp.BLL.Tests
             ordenes.Monto = Convert.ToDecimal(100.00);
             paso = OrdenesBLL.Guardar(ordenes);
             Assert.AreEqual(paso, true);
-        }
+        }*/
 
-        [TestMethod()]
-        public void ModificarTest()
+       // [TestMethod()]
+    /*    public void ModificarTest()
         {
             bool paso = false;
-            OrdenDetalle ordenDetalle = new OrdenDetalle(1, 1, 1, 2, Convert.ToDecimal(100.00));
+           // OrdenDetalle ordenDetalle = new OrdenDetalle(1, 1, 1, 2, Convert.ToDecimal(100.00));
             List<OrdenDetalle> list = new List<OrdenDetalle>();
             list.Add(ordenDetalle);
             Ordenes ordenes = new Ordenes();
@@ -43,7 +43,7 @@ namespace PedidosApp.BLL.Tests
             paso = OrdenesBLL.Guardar(ordenes);
             Assert.AreEqual(paso, true);
         }
-
+    */
         [TestMethod()]
         public void EliminarTest()
         {

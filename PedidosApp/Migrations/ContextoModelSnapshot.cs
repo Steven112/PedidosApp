@@ -28,6 +28,12 @@ namespace PedidosApp.Migrations
                     b.Property<decimal>("Costo")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Importe")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("OrdenId")
                         .HasColumnType("INTEGER");
 
